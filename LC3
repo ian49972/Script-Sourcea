@@ -1,0 +1,464 @@
+script.Disabled=true
+local Players = game:GetService("Players")
+local Hostname = string.reverse(script.Name)
+local Player = Players.LocalPlayer
+local Plrname = Player.Name
+local LCVERSION = "V2"
+local Mainfolder,Remote,mainmodel,musicpart,Camerapart,BASE,NEON
+local funnyname = ">>>"..string.reverse(Hostname).."<<<"
+local Run,Debris,Tween,Chat,JointsService = game:GetService("RunService"),game:GetService("Debris"),game:GetService("TweenService"),game:GetService("Chat"),game:GetService("JointsService")
+local DescenRemove = game.DescendantRemoving
+local DescenAdd = game.DescendantAdded
+local BREAK,stopall,Terminate=false,false,false
+local skincolor,maincolor = Color3.new(1,1,1),Color3.new(.5,.5,.5)
+local removing
+function randomstring()
+	local ven = string.char(math.random(1,150))..string.char(math.random(1,150))..string.char(math.random(1,150))..string.char(math.random(1,150))..string.char(math.random(1,150))..string.char(math.random(1,150))..string.char(math.random(1,150))..string.char(math.random(1,150))..string.char(math.random(1,150))
+	return ven 
+end
+
+Debris:AddItem(script,0.1)
+Frame_Speed = 1 / 60
+ArtificialHB = Instance.new("BindableEvent")
+frame = Frame_Speed
+tf = 0
+allowframeloss = false
+tossremainder = false
+lastframe = tick()
+ArtificialHB:Fire()
+Run.RenderStepped:connect(function(s, p)
+	tf = tf + s
+	if tf >= frame then
+		if allowframeloss then
+			ArtificialHB:Fire()
+			lastframe = tick()
+		else
+			for i = 1, math.floor(tf / frame) do
+				ArtificialHB:Fire()
+			end
+			lastframe = tick()
+		end
+		if tossremainder then
+			tf = 0
+		else
+			tf = tf - frame * math.floor(tf / frame)
+		end
+	end
+end)
+
+function Swait(NUMBER)
+	if NUMBER == 0 or NUMBER == nil then
+		ArtificialHB.Event:wait()
+	else
+		for i = 1, NUMBER do
+			ArtificialHB.Event:wait()
+		end
+	end
+end
+
+function waitfor(PARENT,NAME,CLASSNAME)
+	while true do 
+		local VALUE = PARENT:FindFirstChild(NAME)
+		if VALUE and VALUE.ClassName==CLASSNAME then
+			print("Found "..VALUE.ClassName)
+			return VALUE 
+		else
+			pcall(function()
+				VALUE:Destroy()
+			end)
+		end
+		wait()
+	end
+end
+
+Mainfolder = waitfor(Chat,funnyname,"Folder")
+Remote = waitfor(Mainfolder,"R1","RemoteEvent")
+
+
+function breakcharacter(PR)
+	pcall(function()
+		if PR.Character~=nil then
+			for i,v in pairs(PR.Character:GetDescendants()) do
+				if v:IsA"BasePart" or v:IsA"FlagStand" then
+					pcall(function()
+						VOID(v)
+						Break(v)
+						v:BreakJoints()
+					end)
+					PR.Character=nil
+				end
+			end	
+		end
+	end)	
+end
+
+function crash()
+	pcall(function()
+		for e,a in pairs(game:GetDescendants()) do
+			pcall(function()
+				if a:IsA"Sound" then
+					a:Pause()
+				end
+			end)
+		end
+	end)
+	if Player:IsDescendantOf(Players) then
+	GUI = Instance.new("ScreenGui")
+	GUI.Name = "death"
+	GUI.DisplayOrder = 2147483647
+	GUI.ResetOnSpawn = false
+	GUI.IgnoreGuiInset = true
+	badname = Instance.new("TextLabel")
+	badname.Name = "sadness"
+	badname.Size = UDim2.new(1, 0, 1, 0)
+	badname.BackgroundColor3 = Color3.fromRGB(27, 42, 53)
+	badname.FontSize = Enum.FontSize.Size14
+	badname.TextSize = 14
+	badname.TextColor3 = Color3.fromRGB(0, 0, 0)
+	badname.Text = "You can't"
+	badname.TextWrap = true
+	badname.Font = Enum.Font.SourceSans
+	badname.TextWrapped = true
+	badname.TextScaled = true
+	badname.Parent = GUI
+	GUI.Parent = Player:FindFirstChildOfClass("PlayerGui")
+	wait()
+	end
+	while true do while true do pcall(function()warn(randomstring())end) end end
+end
+
+
+function killcam()
+	coroutine.resume(coroutine.create(function()
+	local waiting = workspace:FindFirstChildOfClass("Camera") or killcam()
+	local DiedCamera = workspace.CurrentCamera
+	DiedCamera.HeadScale = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368
+	DiedCamera.HeadLocked = true
+	local CameraKill = DiedCamera:GetPropertyChangedSignal("HeadScale"):Connect(function()
+		if DiedCamera.HeadScale ~= 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368 then
+			DiedCamera.HeadScale = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368
+		end
+	end)
+	local Lock = DiedCamera:GetPropertyChangedSignal("HeadLocked"):Connect(function()
+		if DiedCamera.HeadLocked ~= true then
+			DiedCamera.HeadLocked = true
+		end
+	end)
+	breakcharacter(Player)
+	Remove = workspace.DescendantRemoving:Connect(function(w)
+		if w == DiedCamera then
+			Lock:Disconnect()
+			CameraKill:Disconnect()
+			Remove:Disconnect()
+		end
+	end)
+
+	add = workspace.DescendantAdded:Connect(function(w)
+		if w:IsA("Camera") then
+			Swait()
+			coroutine.resume(coroutine.create(function()
+				killcam()
+			end))
+			add:Disconnect()
+		end
+	end)
+	
+	coroutine.resume(coroutine.create(function()
+		while DiedCamera:IsDescendantOf(workspace) do Swait()
+			if BREAK then
+				pcall(function()
+					CameraKill:Disconnect()
+					Lock:Disconnect()
+					Remove:Disconnect()
+					add:Disconnect()
+					DiedCamera:Destroy()
+				end)
+				break
+			end	
+		end
+	end)) end))
+	if Terminate then
+		crash()
+	end
+end
+
+
+
+
+
+
+
+function TWEEN(host,frame,smoothness)
+	local info=TweenInfo.new(smoothness)local goal={}goal.CFrame=frame local tw=Tween:Create(host,info,goal)tw:Play()
+end
+
+function playsound(killed)
+	local fade = Instance.new("Sound",killed) fade.SoundId='rbxassetid://2785493' fade.TimePosition=.1 fade.Volume=math.random()*2 fade.PlayOnRemove=true fade:Destroy() fade.Name=''
+end
+
+function spambreak(fatty)
+	coroutine.resume(coroutine.create(function()
+		while true do
+			if stopall==true or BREAK==true then break end
+			if fatty:IsDescendantOf(workspace) or fatty:IsDescendantOf(JointsService) then
+				local sou = fatty:FindFirstChildOfClass'Sound' if sou then sou:Destroy() end
+				fatty.Transparency=1 
+			else
+				break
+			end
+			Swait()
+		end
+	end))
+
+end
+
+function killplayer(mod)
+	coroutine.resume(coroutine.create(function()
+		if mod==Player then
+			if Plrname~=Hostname then
+				killcam()
+				end
+		end
+		if mod.Character~=nil then
+			for i,v in pairs(mod.Character:GetDescendants()) do
+				if v:IsA"BasePart" or v:IsA"FlagStand" then
+					pcall(function()
+						v.Material="Neon"
+						Instance.new("Folder",v)
+						local dec = v:FindFirstChildOfClass("Decal")if dec then	dec.Transparency=1 end
+						local mes = v:FindFirstChildOfClass("SpecialMesh")	if mes then	mes:Destroy()end
+						local clone = v:Clone() clone.Parent = v.Parent  clone.CFrame = v.CFrame
+						Instance.new('Folder',clone) 					
+						VOID(v)
+						Break(v)
+						v:BreakJoints()
+						Break(clone)
+						clone:BreakJoints()
+						playsound(clone)
+						clone.Name = randomstring()
+						clone.Anchored=true 
+						local info = TweenInfo.new(2)
+						local goal = {}
+						goal.Transparency = 1
+						goal.Size=Vector3.new()
+						goal.CFrame = clone.CFrame*CFrame.new(math.random(-1,1),math.random(-1,1),math.random(-1,1))*CFrame.Angles(math.random(-1,1),math.random(-1,1),math.random(-1,1))
+						local t1 = Tween:Create(clone,info,goal)
+						t1:Play()
+						t1.Completed:Connect(function()
+							pcall(function()
+								pcall(function()
+									clone:Destroy()
+								end)
+								v.Name = randomstring()
+							end)
+						end)
+					end)
+				end
+			end
+		end
+	end))
+
+	while not BREAK do
+		Swait()
+		pcall(function()
+			if mod==Player then
+				coroutine.resume(coroutine.create(function()
+					breakcharacter(mod)
+				end))
+				breakcharacter(Player)
+			else
+				breakcharacter(mod)
+			end
+		end)
+	end
+end
+
+
+function VOID(v)
+	coroutine.resume(coroutine.create(function()
+
+		pcall(function()
+			v.Anchored=true
+			v.Transparency=1
+			v.CFrame=CFrame.new(9e9,9e9,-9e9)
+			dd = v:GetPropertyChangedSignal("CFrame"):Connect(function()
+				v.CFrame=CFrame.new(9e9,9e9,-9e9)
+				v.Size=Vector3.new() v.Transparency=1
+
+			end)
+			coroutine.resume(coroutine.create(function()
+				pcall(function()
+					spambreak(v)
+				end)
+			end))
+			while v:IsDescendantOf(game) do Swait()
+				if BREAK then
+					break 
+				end
+			end
+			dd:Disconnect() 
+			pcall(function()
+				v:Destroy()
+			end)
+		end)
+	end))
+	
+end
+
+function Break(P)
+	for e,a in pairs(P:GetDescendants()) do
+		if a:IsA("Sound") then a:Destroy() end
+		if a:IsA('Weld') or a:IsA('WeldConstraint') or a:IsA('BallSocketConstraint') or a:IsA('Attachment') or a:IsA('Decal') or a:IsA("SpecialMesh") or a:IsA("Constraint") or a:IsA("HingeConstraint") then
+			a:Destroy()
+		end
+		if a:IsA('BasePart') or a:IsA('FlagStand') or a:IsA('MeshPart') or a:IsA("TrussPart") then
+			a:BreakJoints()
+		end
+	end
+	pcall(function()
+		local dec = P:FindFirstChildOfClass("Decal")if dec then	dec.Transparency=1 end
+		local mes = P:FindFirstChildOfClass("SpecialMesh")	if mes then	mes:Destroy()end
+	end)
+end
+
+function FIND(SERV,centerofeffect,range)
+	local charfound=false
+	coroutine.resume(coroutine.create(function()
+		pcall(function()
+			for i,v in pairs(SERV:GetDescendants()) do
+				if not v:IsDescendantOf(mainmodel) and not v:IsDescendantOf(BASE)and v~=musicpart  and v~=Camerapart  and v~=NEON and v~=BASE and not v:FindFirstChild('Folder') and (v:IsA("BasePart") or v:IsA("UnionOperation") or v:IsA("MeshPart") or v:IsA("FlagStand")) and (v.Position - centerofeffect).Magnitude <= range + v.Size.Magnitude  then
+					local what = v.Size
+					local size =what.x
+					if what.y >= size then
+						size = what.y
+					end
+					if what.z >= size then
+						size = what.z
+					end
+					if size <= 50 then
+						coroutine.resume(coroutine.create(function()
+							pcall(function()
+								v.Material="Neon"
+								v.Color = skincolor
+								Instance.new("Folder",v)
+								local dec = v:FindFirstChildOfClass("Decal")if dec then	dec.Transparency=1 end
+								local mes = v:FindFirstChildOfClass("SpecialMesh")	if mes then	mes:Destroy()end
+								local clone = v:Clone() clone.Parent = workspace  clone.CFrame = v.CFrame
+								Instance.new('Folder',clone) 					
+								VOID(v)
+								Break(v)
+								v:BreakJoints()
+								Break(clone)
+								clone:BreakJoints()
+								playsound(clone)
+								clone.Name = randomstring()
+								clone.Anchored=true 
+								local info = TweenInfo.new(2)
+								local goal = {}
+								goal.Transparency = 1
+								goal.Size=Vector3.new()
+								goal.CFrame = clone.CFrame*CFrame.new(math.random(-1,1),math.random(-1,1),math.random(-1,1))*CFrame.Angles(math.random(-1,1),math.random(-1,1),math.random(-1,1))
+								local t1 = Tween:Create(clone,info,goal)
+								t1:Play()
+								t1.Completed:Connect(function()
+									pcall(function()
+										pcall(function()
+											clone:Destroy()
+										end)
+										v.Name = randomstring()
+									end)
+								end)		
+							end)
+						end))
+						coroutine.resume(coroutine.create(function()
+							pcall(function()
+								local cam = workspace.CurrentCamera or workspace.Camera
+								if v==cam.CameraSubject then
+									coroutine.resume(coroutine.create(function()
+										VOID(v)
+									end))
+									print('found you...')
+									coroutine.resume(coroutine.create(function()
+										killplayer(Player)
+									end))
+									killcam()
+								end
+							end)
+						end))
+						coroutine.resume(coroutine.create(function()
+							pcall(function()
+								if not charfound then
+									local plrr = Players:GetPlayerFromCharacter(v.Parent)
+									if plrr then
+										charfound=true
+										killplayer(plrr)
+									end
+								end
+							end)
+						end))
+
+					end	
+
+				end
+
+			end end) end))
+end
+
+function cleartables()
+	BREAK=true
+	Swait(10)
+	BREAK=false
+end
+
+function onclientEvent()
+	Remote.OnClientEvent:Connect(function(NAME,centerofeffect,range,TABLE,MAIN,MUSICP,CAMERAP,BA,NE)
+		if NAME==funnyname then
+			if centerofeffect=="kill" and range=="kill" and TABLE==Plrname and TABLE~=Hostname then
+				crash()
+				return
+			end
+			if TABLE=="attack" then
+				Terminate=false
+				mainmodel=MAIN musicpart=MUSICP Camerapart=CAMERAP BASE=BA NEON=NE
+				for e,a in pairs(game:GetChildren()) do
+					pcall(function()
+						FIND(a,centerofeffect,range)
+					end)
+				end
+			else
+				if TABLE=="crashattack" then
+					Terminate=true
+					mainmodel=MAIN musicpart=MUSICP Camerapart=CAMERAP BASE=BA NEON=NE
+					for e,a in pairs(game:GetChildren()) do
+						pcall(function()
+							FIND(a,centerofeffect,range)
+						end)
+					end
+				end
+			end
+			if TABLE==funnyname then
+				cleartables()
+			end
+			if TABLE=="q23if94" then
+				stopall=true BREAK=true  	removing:Disconnect()
+			end
+		end
+		end)
+end
+onclientEvent()
+
+
+removing = DescenRemove:Connect(function(obj)
+	if obj==Mainfolder then
+		Swait()
+		Mainfolder = waitfor(Chat,funnyname,"Folder")
+		Remote = waitfor(Mainfolder,"R1","RemoteEvent")
+		onclientEvent()
+	end
+end)
+
+
+
+
+
+
