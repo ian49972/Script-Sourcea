@@ -1,0 +1,197 @@
+script.Disabled=true
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local Run,Tween,Debris,JointsService,chat = game:GetService("RunService"),game:GetService("TweenService"),game:GetService("Debris"),game:GetService("JointsService"),game:GetService("Chat")
+local Mouse = Player:GetMouse()
+local Hostname = Player.Name
+local funnyname = ">>>"..string.reverse(Hostname).."<<<"
+local Mainfolder = chat:WaitForChild(funnyname)
+local Remote = Mainfolder:WaitForChild("R1")
+local camvalue = Mainfolder:WaitForChild("R2")
+local resetpoint = 2
+local stopall=false
+
+
+function waitfor(PARENT,NAME,CLASSNAME)
+	while not stopall do 
+		local VALUE = PARENT:FindFirstChild(NAME)
+		if VALUE and VALUE.ClassName==CLASSNAME then
+			--print("Found "..VALUE.ClassName)
+			return VALUE 
+		else
+			pcall(function()
+				VALUE:Destroy()
+			end)
+		end
+		wait()
+	end
+end
+
+Player.Chatted:Connect(function(the)
+	if the == "C/end" then
+		stopall=true
+	end
+end)
+
+Debris:AddItem(script,0.1)
+Frame_Speed = 1 / 60
+ArtificialHB = Instance.new("BindableEvent")
+frame = Frame_Speed
+tf = 0
+allowframeloss = false
+tossremainder = false
+lastframe = tick()
+ArtificialHB:Fire()
+Run.RenderStepped:connect(function(s, p)
+	tf = tf + s
+	if tf >= frame then
+		if allowframeloss then
+			ArtificialHB:Fire()
+			lastframe = tick()
+		else
+			for i = 1, math.floor(tf / frame) do
+				ArtificialHB:Fire()
+			end
+			lastframe = tick()
+		end
+		if tossremainder then
+			tf = 0
+		else
+			tf = tf - frame * math.floor(tf / frame)
+		end
+	end
+end)
+
+function Swait(NUMBER)
+	if NUMBER == 0 or NUMBER == nil then
+		ArtificialHB.Event:wait()
+	else
+		for i = 1, NUMBER do
+			ArtificialHB.Event:wait()
+		end
+	end
+end
+
+function keydata(key,down)
+	Mainfolder = waitfor(chat,funnyname,"Folder")    --chat:WaitForChild(funnyname)
+	Remote = waitfor(Mainfolder,"R1","RemoteEvent")         -- Mainfolder:WaitForChild("R1")
+	Remote:FireServer(key,down)
+end
+
+function remote()
+	local folder = chat:FindFirstChild(funnyname)
+	if folder then 
+		Remote = folder:FindFirstChild("R1")
+		if Remote then
+			return Remote
+		else
+			return nil
+		end
+	end
+end
+
+function findValue2()
+	local folder = chat:FindFirstChild(funnyname)
+	if folder then 
+		local	VALUE = folder:FindFirstChild("R3")
+		if VALUE and VALUE:IsA"ObjectValue" then
+			return VALUE
+		else
+			return nil
+		end
+	end
+end
+
+function findValue()
+	local folder = chat:FindFirstChild(funnyname)
+	if folder then 
+	local	VALUE = folder:FindFirstChild("R2")
+		if VALUE and VALUE:IsA"ObjectValue" then
+			return VALUE
+		else
+return nil
+		end
+	end
+end
+local keyup = Mouse.KeyDown:Connect(function(key)
+	key:lower()
+	keydata(key,true)
+end)
+
+local keydown = Mouse.KeyUp:Connect(function(key)
+	key:lower()
+	keydata(key,false)
+end)
+
+
+
+function fixcam()
+	local waiting = workspace:FindFirstChildOfClass("Camera") or fixcam()
+	local DiedCamera = workspace.CurrentCamera
+	DiedCamera.HeadScale = 1
+	DiedCamera.HeadLocked = true
+	local CameraKill = DiedCamera:GetPropertyChangedSignal("HeadScale"):Connect(function()
+		if DiedCamera.HeadScale ~= 1 then
+			DiedCamera.HeadScale = 1
+		end
+	end)
+	local Lock = DiedCamera:GetPropertyChangedSignal("HeadLocked"):Connect(function()
+		if DiedCamera.HeadLocked ~= true then
+			DiedCamera.HeadLocked = true
+		end
+	end)
+	Remove = workspace.DescendantRemoving:Connect(function(w)
+		if w == DiedCamera then
+			Lock:Disconnect()
+			CameraKill:Disconnect()
+			Remove:Disconnect()
+		end
+	end)
+
+	add = workspace.DescendantAdded:Connect(function(w)
+		if w:IsA("Camera") then
+			Swait()
+			coroutine.resume(coroutine.create(function()
+				fixcam()
+			end))
+			add:Disconnect()
+		end
+	end)
+	
+
+end
+
+fixcam()
+local loop=0
+coroutine.resume(coroutine.create(function()
+	while true do if stopall then keyup:Disconnect() keydown:Disconnect()  break end
+			Swait()
+		
+		pcall(function()
+			local C = workspace.CurrentCamera
+			local camval = findValue()
+			if camval~=nil then
+				C.CameraSubject = camval.Value
+			end
+			pcall(function()
+				local musicval = findValue2()
+				if musicval~=nil then
+					local SOUND = musicval.Value
+					local REM = remote()
+					if REM~=nil then
+						REM:FireServer(nil,nil,Hostname,nil,nil,nil,SOUND.PlaybackLoudness)
+					end
+				end
+			end)
+			C.CameraType = "Custom"
+			C.HeadLocked = true
+			C.HeadScale = 1
+			C.FieldOfView = 70
+			local rem = remote()
+			if rem~=nil then
+				rem:FireServer(nil,nil,"camera",C.CoordinateFrame)
+				rem:FireServer(nil,nil,"mouse",nil,Mouse.Hit,Mouse.Hit.p)
+			end
+		end)
+	end
+end))
